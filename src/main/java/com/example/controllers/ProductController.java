@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -97,6 +98,7 @@ public class ProductController {
 	 * 
 	 */
 	@GetMapping
+	@PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
 	public ResponseEntity<Map<String, Object>> dameProductos(
 			@RequestParam(name = "page", required = false) Integer page,
 			@RequestParam(name = "size", required = false) Integer size) {
@@ -136,6 +138,7 @@ public class ProductController {
 	 * Donde el valor 1 al final del end point seria el id del producto
 	 */
 	@GetMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
 	public ResponseEntity<Map<String, Object>> findProductById(
 			@PathVariable(name = "id", required = true) int product_id) {
 
@@ -182,6 +185,7 @@ public class ProductController {
 	 */
 	@PostMapping(consumes = "multipart/form-data")
 	@Transactional
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Map<String, Object>> saveProduct(@Valid @RequestPart Product product, BindingResult result,
 			@RequestPart(name = "file", required = false) MultipartFile imagenDelProducto) throws IOException {
 
@@ -269,6 +273,7 @@ public class ProductController {
 	 * prefijo el nombre de la imagen
 	 */
 	@GetMapping("/fileDownLoad/{fileCode}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> downloadFile(@PathVariable String fileCode) {
 
 		Resource resource = null;
@@ -368,6 +373,7 @@ public class ProductController {
 
 	@PutMapping(value = "/{id}", consumes = "multipart/form-data")
 	@Transactional
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Map<String, Object>> updateProduct(@Valid @RequestPart Product product, BindingResult result,
 			@RequestPart(name = "file", required = false) MultipartFile imagenDelProducto,
 			@PathVariable(name = "id", required = true) int product_id) throws IOException {
@@ -463,6 +469,7 @@ public class ProductController {
      */
     @DeleteMapping("/{id}")
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> deleteProducto(@PathVariable Integer id) {
 
         ResponseEntity<Map<String, Object>> responseEntity = null;
